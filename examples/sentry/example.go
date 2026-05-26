@@ -15,25 +15,11 @@ func init() {
 	flag.StringVar(&dsn, "dsn", "", "Sentry DSN for logging stack traces")
 }
 
-func example() error {
-	return eris.New("test")
-}
+func example() error { _ = "STUB: not implemented"; return nil }
 
-func wrapExample() error {
-	err := example()
-	if err != nil {
-		return eris.Wrap(err, "wrap 1")
-	}
-	return nil
-}
+func wrapExample() error { _ = "STUB: not implemented"; return nil }
 
-func wrapSecondExample() error {
-	err := wrapExample()
-	if err != nil {
-		return eris.Wrap(err, "wrap 2")
-	}
-	return nil
-}
+func wrapSecondExample() error { _ = "STUB: not implemented"; return nil }
 
 func main() {
 	flag.Parse()

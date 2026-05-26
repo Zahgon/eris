@@ -1,9 +1,5 @@
 package eris
 
-import (
-	"fmt"
-)
-
 // FormatOptions defines output options like omitting stack traces and inverting the error or stack order.
 type FormatOptions struct {
 	InvertOutput bool // Flag that inverts the error output (wrap errors shown first).
@@ -24,84 +20,40 @@ type StringFormat struct {
 
 // NewDefaultStringFormat returns a default string output format.
 func NewDefaultStringFormat(options FormatOptions) StringFormat {
-	stringFmt := StringFormat{
-		Options: options,
-	}
-	if options.WithTrace {
-		stringFmt.MsgStackSep = "\n"
-		stringFmt.PreStackSep = "\t"
-		stringFmt.StackElemSep = ":"
-		stringFmt.ErrorSep = "\n"
-	} else {
-		stringFmt.ErrorSep = ": "
-	}
-	return stringFmt
+	_ = "STUB: not implemented"
+	return *new(StringFormat)
 }
 
 // ToString returns a default formatted string for a given error.
 //
 // An error without trace will be formatted as follows:
 //
-//   <Wrap error msg>: <Root error msg>
+//	<Wrap error msg>: <Root error msg>
 //
 // An error with trace will be formatted as follows:
 //
-//   <Wrap error msg>
-//     <Method2>:<File2>:<Line2>
-//   <Root error msg>
-//     <Method2>:<File2>:<Line2>
-//     <Method1>:<File1>:<Line1>
-func ToString(err error, withTrace bool) string {
-	return ToCustomString(err, NewDefaultStringFormat(FormatOptions{
-		WithTrace:    withTrace,
-		WithExternal: true,
-	}))
-}
+//	<Wrap error msg>
+//	  <Method2>:<File2>:<Line2>
+//	<Root error msg>
+//	  <Method2>:<File2>:<Line2>
+//	  <Method1>:<File1>:<Line1>
+func ToString(err error, withTrace bool) string { _ = "STUB: not implemented"; return "" }
 
 // ToCustomString returns a custom formatted string for a given error.
 //
 // To declare custom format, the Format object has to be passed as an argument.
 // An error without trace will be formatted as follows:
 //
-//   <Wrap error msg>[Format.ErrorSep]<Root error msg>
+//	<Wrap error msg>[Format.ErrorSep]<Root error msg>
 //
 // An error with trace will be formatted as follows:
 //
-//   <Wrap error msg>[Format.MsgStackSep]
-//   [Format.PreStackSep]<Method2>[Format.StackElemSep]<File2>[Format.StackElemSep]<Line2>[Format.ErrorSep]
-//   <Root error msg>[Format.MsgStackSep]
-//   [Format.PreStackSep]<Method2>[Format.StackElemSep]<File2>[Format.StackElemSep]<Line2>[Format.ErrorSep]
-//   [Format.PreStackSep]<Method1>[Format.StackElemSep]<File1>[Format.StackElemSep]<Line1>[Format.ErrorSep]
-func ToCustomString(err error, format StringFormat) string {
-	upErr := Unpack(err)
-
-	var str string
-	if format.Options.InvertOutput {
-		if format.Options.WithExternal && upErr.ErrExternal != nil {
-			str += formatExternalStr(upErr.ErrExternal, format.Options.WithTrace)
-			if (format.Options.WithTrace && len(upErr.ErrRoot.Stack) > 0) || upErr.ErrRoot.Msg != "" {
-				str += format.ErrorSep
-			}
-		}
-		str += upErr.ErrRoot.formatStr(format)
-		for _, eLink := range upErr.ErrChain {
-			str += format.ErrorSep + eLink.formatStr(format)
-		}
-	} else {
-		for i := len(upErr.ErrChain) - 1; i >= 0; i-- {
-			str += upErr.ErrChain[i].formatStr(format) + format.ErrorSep
-		}
-		str += upErr.ErrRoot.formatStr(format)
-		if format.Options.WithExternal && upErr.ErrExternal != nil {
-			if (format.Options.WithTrace && len(upErr.ErrRoot.Stack) > 0) || upErr.ErrRoot.Msg != "" {
-				str += format.ErrorSep
-			}
-			str += formatExternalStr(upErr.ErrExternal, format.Options.WithTrace)
-		}
-	}
-
-	return str
-}
+//	<Wrap error msg>[Format.MsgStackSep]
+//	[Format.PreStackSep]<Method2>[Format.StackElemSep]<File2>[Format.StackElemSep]<Line2>[Format.ErrorSep]
+//	<Root error msg>[Format.MsgStackSep]
+//	[Format.PreStackSep]<Method2>[Format.StackElemSep]<File2>[Format.StackElemSep]<Line2>[Format.ErrorSep]
+//	[Format.PreStackSep]<Method1>[Format.StackElemSep]<File1>[Format.StackElemSep]<Line1>[Format.ErrorSep]
+func ToCustomString(err error, format StringFormat) string { _ = "STUB: not implemented"; return "" }
 
 // JSONFormat defines a JSON error format.
 type JSONFormat struct {
@@ -112,49 +64,45 @@ type JSONFormat struct {
 
 // NewDefaultJSONFormat returns a default JSON output format.
 func NewDefaultJSONFormat(options FormatOptions) JSONFormat {
-	return JSONFormat{
-		Options:      options,
-		StackElemSep: ":",
-	}
+	_ = "STUB: not implemented"
+	return *new(JSONFormat)
 }
 
 // ToJSON returns a JSON formatted map for a given error.
 //
 // An error without trace will be formatted as follows:
 //
-//   {
-//     "root": {
-//         "message": "Root error msg"
-//     },
-//     "wrap": [
-//       {
-//         "message": "Wrap error msg"
-//       }
-//     ]
-//   }
+//	{
+//	  "root": {
+//	      "message": "Root error msg"
+//	  },
+//	  "wrap": [
+//	    {
+//	      "message": "Wrap error msg"
+//	    }
+//	  ]
+//	}
 //
 // An error with trace will be formatted as follows:
 //
-//   {
-//     "root": {
-//       "message": "Root error msg",
-//       "stack": [
-//         "<Method2>:<File2>:<Line2>",
-//         "<Method1>:<File1>:<Line1>"
-//       ]
-//     },
-//     "wrap": [
-//       {
-//         "message": "Wrap error msg",
-//         "stack": "<Method2>:<File2>:<Line2>"
-//       }
-//     ]
-//   }
+//	{
+//	  "root": {
+//	    "message": "Root error msg",
+//	    "stack": [
+//	      "<Method2>:<File2>:<Line2>",
+//	      "<Method1>:<File1>:<Line1>"
+//	    ]
+//	  },
+//	  "wrap": [
+//	    {
+//	      "message": "Wrap error msg",
+//	      "stack": "<Method2>:<File2>:<Line2>"
+//	    }
+//	  ]
+//	}
 func ToJSON(err error, withTrace bool) map[string]interface{} {
-	return ToCustomJSON(err, NewDefaultJSONFormat(FormatOptions{
-		WithTrace:    withTrace,
-		WithExternal: true,
-	}))
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // ToCustomJSON returns a JSON formatted map for a given error.
@@ -162,83 +110,43 @@ func ToJSON(err error, withTrace bool) map[string]interface{} {
 // To declare custom format, the Format object has to be passed as an argument.
 // An error without trace will be formatted as follows:
 //
-//   {
-//     "root": {
-//       "message": "Root error msg",
-//     },
-//     "wrap": [
-//       {
-//         "message": "Wrap error msg'",
-//       }
-//     ]
-//   }
+//	{
+//	  "root": {
+//	    "message": "Root error msg",
+//	  },
+//	  "wrap": [
+//	    {
+//	      "message": "Wrap error msg'",
+//	    }
+//	  ]
+//	}
 //
 // An error with trace will be formatted as follows:
 //
-//   {
-//     "root": {
-//       "message": "Root error msg",
-//       "stack": [
-//         "<Method2>[Format.StackElemSep]<File2>[Format.StackElemSep]<Line2>",
-//         "<Method1>[Format.StackElemSep]<File1>[Format.StackElemSep]<Line1>"
-//       ]
-//     }
-//     "wrap": [
-//       {
-//         "message": "Wrap error msg",
-//         "stack": "<Method2>[Format.StackElemSep]<File2>[Format.StackElemSep]<Line2>"
-//       }
-//     ]
-//   }
+//	{
+//	  "root": {
+//	    "message": "Root error msg",
+//	    "stack": [
+//	      "<Method2>[Format.StackElemSep]<File2>[Format.StackElemSep]<Line2>",
+//	      "<Method1>[Format.StackElemSep]<File1>[Format.StackElemSep]<Line1>"
+//	    ]
+//	  }
+//	  "wrap": [
+//	    {
+//	      "message": "Wrap error msg",
+//	      "stack": "<Method2>[Format.StackElemSep]<File2>[Format.StackElemSep]<Line2>"
+//	    }
+//	  ]
+//	}
 func ToCustomJSON(err error, format JSONFormat) map[string]interface{} {
-	upErr := Unpack(err)
-
-	jsonMap := make(map[string]interface{})
-	if format.Options.WithExternal && upErr.ErrExternal != nil {
-		jsonMap["external"] = formatExternalStr(upErr.ErrExternal, format.Options.WithTrace)
-	}
-
-	if upErr.ErrRoot.Msg != "" || len(upErr.ErrRoot.Stack) > 0 {
-		jsonMap["root"] = upErr.ErrRoot.formatJSON(format)
-	}
-
-	if len(upErr.ErrChain) > 0 {
-		var wrapArr []map[string]interface{}
-		for _, eLink := range upErr.ErrChain {
-			wrapMap := eLink.formatJSON(format)
-			if format.Options.InvertOutput {
-				wrapArr = append(wrapArr, wrapMap)
-			} else {
-				wrapArr = append([]map[string]interface{}{wrapMap}, wrapArr...)
-			}
-		}
-		jsonMap["wrap"] = wrapArr
-	}
-
-	return jsonMap
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // Unpack returns a human-readable UnpackedError type for a given error.
-func Unpack(err error) UnpackedError {
-	var upErr UnpackedError
-	for err != nil {
-		switch err := err.(type) {
-		case *rootError:
-			upErr.ErrRoot.Msg = err.msg
-			upErr.ErrRoot.Stack = err.stack.get()
-		case *wrapError:
-			// prepend links in stack trace order
-			link := ErrLink{Msg: err.msg}
-			link.Frame = err.frame.get()
-			upErr.ErrChain = append([]ErrLink{link}, upErr.ErrChain...)
-		default:
-			upErr.ErrExternal = err
-			return upErr
-		}
-		err = Unwrap(err)
-	}
-	return upErr
-}
+func Unpack(err error) UnpackedError { _ = "STUB: not implemented"; return *new(UnpackedError) }
+
+// prepend links in stack trace order
 
 // UnpackedError represents complete information about an error.
 //
@@ -252,12 +160,7 @@ type UnpackedError struct {
 }
 
 // String formatter for external errors.
-func formatExternalStr(err error, withTrace bool) string {
-	if withTrace {
-		return fmt.Sprintf("%+v", err)
-	}
-	return fmt.Sprint(err)
-}
+func formatExternalStr(err error, withTrace bool) string { _ = "STUB: not implemented"; return "" }
 
 // ErrRoot represents an error stack and the accompanying message.
 type ErrRoot struct {
@@ -266,28 +169,12 @@ type ErrRoot struct {
 }
 
 // String formatter for root errors.
-func (err *ErrRoot) formatStr(format StringFormat) string {
-	str := err.Msg + format.MsgStackSep
-	if format.Options.WithTrace {
-		stackArr := err.Stack.format(format.StackElemSep, format.Options.InvertTrace)
-		for i, frame := range stackArr {
-			str += format.PreStackSep + frame
-			if i < len(stackArr)-1 {
-				str += format.ErrorSep
-			}
-		}
-	}
-	return str
-}
+func (err *ErrRoot) formatStr(format StringFormat) string { _ = "STUB: not implemented"; return "" }
 
 // JSON formatter for root errors.
 func (err *ErrRoot) formatJSON(format JSONFormat) map[string]interface{} {
-	rootMap := make(map[string]interface{})
-	rootMap["message"] = fmt.Sprint(err.Msg)
-	if format.Options.WithTrace {
-		rootMap["stack"] = err.Stack.format(format.StackElemSep, format.Options.InvertTrace)
-	}
-	return rootMap
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // ErrLink represents a single error frame and the accompanying message.
@@ -297,20 +184,10 @@ type ErrLink struct {
 }
 
 // String formatter for wrap errors chains.
-func (eLink *ErrLink) formatStr(format StringFormat) string {
-	str := eLink.Msg + format.MsgStackSep
-	if format.Options.WithTrace {
-		str += format.PreStackSep + eLink.Frame.format(format.StackElemSep)
-	}
-	return str
-}
+func (eLink *ErrLink) formatStr(format StringFormat) string { _ = "STUB: not implemented"; return "" }
 
 // JSON formatter for wrap error chains.
 func (eLink *ErrLink) formatJSON(format JSONFormat) map[string]interface{} {
-	wrapMap := make(map[string]interface{})
-	wrapMap["message"] = fmt.Sprint(eLink.Msg)
-	if format.Options.WithTrace {
-		wrapMap["stack"] = eLink.Frame.format(format.StackElemSep)
-	}
-	return wrapMap
+	_ = "STUB: not implemented"
+	return nil
 }

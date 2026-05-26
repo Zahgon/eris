@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"os"
-	"path/filepath"
 
 	"github.com/pkg/errors"
 	"github.com/rotisserie/eris"
@@ -23,11 +22,9 @@ type request struct {
 }
 
 func (req *request) validate() error {
-	if req.ID == "" {
-		// create a new local error and wrap it with some context
-		err := eris.New("error bad request")
-		return eris.Wrap(err, "received a request with no ID")
-	}
+	_ = "STUB: not implemented"
+
+	// create a new local error and wrap it with some context
 	return nil
 }
 
@@ -36,59 +33,30 @@ type resource struct {
 	AbsPath string
 }
 
-func getResource(req request) (*resource, error) {
-	if req.ID == "res2" {
-		return &resource{
-			ID:      req.ID,
-			AbsPath: "./some/malformed/absolute/path/data.json", // malformed absolute filepath to simulate a "bug"
-		}, nil
-	} else if req.ID == "res3" {
-		return &resource{
-			ID:      req.ID,
-			AbsPath: "/some/correct/path/data.json",
-		}, nil
-	}
+func getResource(req request) (*resource, error) { _ = "STUB: not implemented"; return nil, nil }
 
-	return nil, errors.Wrapf(errNotFound, "failed to get resource '%v'", req.ID)
-}
+// malformed absolute filepath to simulate a "bug"
 
 func getRelPath(base string, path string) (string, error) {
-	relPath, err := filepath.Rel(base, path)
-	if err != nil {
-		// it's generally useful to wrap external errors with a type that you know how to handle
-		// first (e.g. ErrInternalServer). this will help if/when you want to do error inspection
-		// via eris.Is(err, ErrInternalServer) or eris.Cause(err).
-		return "", eris.Wrap(errInternalServer, err.Error())
-	}
-	return relPath, nil
+	_ = "STUB: not implemented"
+	return "", nil
 }
+
+// it's generally useful to wrap external errors with a type that you know how to handle
+// first (e.g. ErrInternalServer). this will help if/when you want to do error inspection
+// via eris.Is(err, ErrInternalServer) or eris.Cause(err).
 
 type response struct {
 	RelPath string
 }
 
-func processResource(req request) (*response, error) {
-	if err := req.validate(); err != nil {
-		// simply return the error if there's no additional context
-		return nil, err
-	}
+func processResource(req request) (*response, error) { _ = "STUB: not implemented"; return nil, nil }
 
-	resource, err := getResource(req)
-	if err != nil {
-		return nil, err
-	}
+// simply return the error if there's no additional context
 
-	// do some processing on the data
-	relPath, err := getRelPath("/Users/roti/", resource.AbsPath)
-	if err != nil {
-		// wrap the error if you want to add more context
-		return nil, eris.Wrapf(err, "failed to get relative path for resource '%v'", resource.ID)
-	}
+// do some processing on the data
 
-	return &response{
-		RelPath: relPath,
-	}, nil
-}
+// wrap the error if you want to add more context
 
 type logReq struct {
 	Method string
@@ -97,21 +65,11 @@ type logReq struct {
 	Err    error
 }
 
-func logRequest(logger *logrus.Logger, logReq logReq) {
-	fields := logrus.Fields{
-		"method": logReq.Method,
-	}
-	if logReq.Err != nil {
-		// it's generally a good idea to contain error formatting logic inside a utility method like
-		// this one to ensure that all errors are logged uniformly. in this case, we're logging with
-		// the default format and stack traces enabled.
-		fields["error"] = eris.ToJSON(logReq.Err, true)
-		logger.WithFields(fields).Error("method completed with error")
-	} else {
-		fields["response"] = *logReq.Res
-		logger.WithFields(fields).Info("method completed successfully")
-	}
-}
+func logRequest(logger *logrus.Logger, logReq logReq) { _ = "STUB: not implemented"; return }
+
+// it's generally a good idea to contain error formatting logic inside a utility method like
+// this one to ensure that all errors are logged uniformly. in this case, we're logging with
+// the default format and stack traces enabled.
 
 // This example demonstrates how to integrate eris with a JSON logger (e.g. logrus). It's broken
 // into several methods to show the formatted output for wrapped errors, and it includes three
